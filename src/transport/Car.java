@@ -60,4 +60,9 @@ public class Car extends Transport implements Competing {
     public String toString() {
         return "Легковой автомобиль" + super.toString() + ", тип кузова " + typeOfBody.getRus();
     }
+
+    @Override
+    public void repair() {
+        System.out.println("Машина " + getBrand() + " " + getModel() + " починена");
+    }
 }

@@ -62,4 +62,9 @@ public class Truck extends Transport implements Competing {
         return "Грузовой автомобиль" + super.toString() + ", грузоподъёмность от " + weight.getFrom() +
                 " до " + weight.getTo() + " тонн";
     }
+
+    @Override
+    public void repair() {
+        System.out.println("Грузовая машина " + getBrand() + " " + getModel() + " починена");
+    }
 }

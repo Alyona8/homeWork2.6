@@ -61,4 +61,9 @@ public class Bus extends Transport implements Competing {
         return "Автобус" + super.toString() + ", вместимость от " + capacity.getFrom() +
                 " до " + capacity.getTo() + " мест";
     }
+
+    @Override
+    public void repair() {
+        System.out.println("Автобус " + getBrand() + " " + getModel() + " починен");
+    }
 }

@@ -1,5 +1,11 @@
 import data.Data;
+import driver.DriverB;
 import transport.*;
+
+import java.sql.*;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,57 +17,72 @@ public class Main {
         }
         System.out.println();
 
+        Mechanic<Car> anton = new Mechanic<Car>("Антон", "Звонов", "Avtostok");
+        Mechanic<Transport> petr = new Mechanic<Transport>("Петр", "Петров", "Truck");
+        Sponsor lukoil = new Sponsor("Лукойл", 2_000_000);
+        Sponsor michelin = new Sponsor("Michelin", 3_000_000);
+
         Car bmw = new Car("BMW", "X-5", 2, TypeOfBody.CROSSOVER);
-        Car audi = new Car("Audi", "A-8", 1.7, TypeOfBody.SEDAN);
-        Car vesta = new Car("Lada", "Vesta", 1.6, TypeOfBody.SEDAN);
-        Car megane = new Car("Renault", "Megane", 1.8, TypeOfBody.SEDAN);
+        bmw.addMechanic (anton);
+        bmw.addSponsor(lukoil, michelin);
         System.out.println(bmw);
-        System.out.println(audi);
-        System.out.println(vesta);
-        System.out.println(megane);
-        audi.pitstop();
         System.out.println();
         Truck maz = new Truck("МАЗ", "535", 5.9, Weight.N1);
-        Truck hyundai = new Truck("Hyundai", "Mighty", 7, Weight.N2);
-        Truck kamaz = new Truck("КамАЗ", "65207", 8.2, Weight.N3);
-        Truck isuzu = new Truck("ISUZU", "ELF", 8.5, Weight.N1);
+        maz.addMechanic(petr);
+        maz.addSponsor(michelin);
         System.out.println(maz);
-        System.out.println(hyundai);
-        System.out.println(kamaz);
-        System.out.println(isuzu);
-        kamaz.maxSpeed();
         System.out.println();
         Bus daewoo = new Bus("Daewoo", "BC212MA", 2.1, Capacity.SMALL);
-        Bus nefaz = new Bus("НЕФАЗ", "5299-32", 3.4, Capacity.AVERAGE);
-        Bus mercedes = new Bus("Mercedes", "Benz Conecto", 5, Capacity.EXTRA_LARGE);
-        Bus volvo = new Bus("Volvo", "9900", 4.7, Capacity.LARGE);
+        daewoo.addMechanic(petr);
+        daewoo.addSponsor(lukoil);
         System.out.println(daewoo);
-        System.out.println(nefaz);
-        System.out.println(mercedes);
-        System.out.println(volvo);
         daewoo.bestTime();
         System.out.println();
-        service(bmw, audi, vesta, megane,
-                maz, hyundai, kamaz, isuzu,
-                daewoo, nefaz, mercedes, volvo);
-    }
+        service(bmw, maz, daewoo);
 
-    private static void service(Transport... transports) {
+        List<Transport> transports = List.of(bmw, maz, daewoo);
+
+        ServiceStation serviceStation = new ServiceStation();
+        serviceStation.addCar(bmw);
+        serviceStation.addTruck(maz);
+        serviceStation.service();
+        serviceStation.service();
+
         for (Transport transport : transports) {
-            if (!transport.service()) {
-                serviceTransport(transport);
+            printInfo(transport);
+        }
+        }
+
+    private static void printInfo(Transport transport) {
+        System.out.println("Информация по автомобилю " + transport.getBrand() + " " + transport.getModel());
+        System.out.println("Спонсоры:");
+        for (Sponsor sponsor : transport.getSponsors()) {
+            System.out.println(sponsor.getName() + " " + sponsor.getAmount());
+        }
+        System.out.println("Механики:");
+        for (Mechanic<?> mechanic : transport.getMechanics()) {
+            System.out.println(mechanic.getName() + " " + mechanic.getSurname() + " " + mechanic.getCompany());
+        }
+    }
+
+        private static void service (Transport...transports){
+            for (Transport transport : transports) {
+                if (!transport.service()) {
+                    serviceTransport(transport);
+                }
+            }
+        }
+
+        private static void serviceTransport (Transport transport){
+            try {
+                if (!transport.service()) {
+                    throw new RuntimeException("Автомобиль " + transport.getBrand() + " " +
+                            transport.getModel() + " не прошёл диагностику");
+                }
+            } catch (RuntimeException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
 
-    private static void serviceTransport(Transport transport) {
-        try {
-            if (!transport.service()) {
-                throw new RuntimeException("Автомобиль " + transport.getBrand() + " " +
-                        transport.getModel() + " не прошёл диагностику");
-            }
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-}
+

@@ -3,7 +3,7 @@ package driver;
 import transport.Competing;
 import transport.Transport;
 
-abstract class Driver<D extends Transport & Competing> {
+abstract class Driver<T extends Transport & Competing> {
     private final String name;
     private final char license;
     private Integer experience;
@@ -42,19 +42,19 @@ abstract class Driver<D extends Transport & Competing> {
         }
     }
 
-    public void start(D transport) {
+    public void start(T transport) {
         System.out.println(name + " начинает движение " + transport.getBrand() + " " + transport.getModel());
     }
 
-    public void stop(D transport) {
+    public void stop(T transport) {
         System.out.println(name + " останавливает " + transport.getBrand() + " " + transport.getModel());
     }
 
-    public void refillCar(D transport) {
+    public void refillCar(T transport) {
         System.out.println(name + " заправляет " + transport.getBrand() + " " + transport.getModel());
     }
 
-    public void printInfo(D transport) {
+    public void printInfo(T transport) {
         System.out.println("Водитель " + name + " управляет " + transport.getBrand() + " " + transport.getModel() +
                 " и будет участвовать в заезде");
     }
